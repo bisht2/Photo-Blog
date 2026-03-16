@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Journeys — Itsy Bitsy</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-primary: #111111;
+      --color-black: #000000;
+      --color-white: #ffffff;
+      --color-text-muted: rgba(255, 255, 255, 0.7);
+      --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --spacing-20: 0.5rem;
+      --spacing-30: clamp(0.5rem, 1vw, 1rem);
+      --spacing-40: clamp(0.75rem, 1.5vw, 1.5rem);
+      --spacing-50: clamp(1rem, 2vw, 2rem);
+      --spacing-60: clamp(1.5rem, 3vw, 3rem);
+      --spacing-70: clamp(2rem, 4vw, 4rem);
+      --font-size-small: clamp(0.825rem, 0.825rem + ((1vw - 0.2rem) * 0.433), 1.0625rem);
+      --font-size-medium: clamp(1.25rem, 3vw, 1.5rem);
+      --font-size-large: clamp(2.5rem, 3vw, 3rem);
+      --font-size-xlarge: clamp(3.5rem, 8vw, 8rem);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: var(--font-body);
+      line-height: 1.5;
+      color: var(--color-white);
+      background-color: var(--color-primary);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      padding: 0 var(--spacing-50);
+    }
+
+    a { color: inherit; text-decoration: none; transition: opacity 0.2s ease; }
+    a:hover { opacity: 0.8; }
+    ul { list-style: none; }
+    img, video { max-width: 100%; display: block; height: auto; }
+    ::selection { background: var(--color-white); color: var(--color-black); }
+
+    h1, h2, h3, h4 { font-family: var(--font-body); font-weight: 700; line-height: 1.1; }
+    h1 { font-size: var(--font-size-xlarge); letter-spacing: -0.2rem; margin: 0; }
+    h2 { font-size: var(--font-size-large); letter-spacing: -0.01rem; margin: 0; }
+    h3 { font-size: var(--font-size-medium); font-weight: 500; margin: 0; }
+
+    .container { width: 100%; max-width: 100%; margin: 0; padding: 0; }
+    .section { margin-bottom: var(--spacing-70); }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--color-primary);
+      padding: var(--spacing-50) 0;
+      margin: 0 calc(var(--spacing-50) * -1);
+      padding-left: var(--spacing-50);
+      padding-right: var(--spacing-50);
+    }
+    .header__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header__logo {
+      font-size: var(--font-size-large);
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .nav__list {
+      display: flex;
+      gap: var(--spacing-40);
+      align-items: center;
+    }
+    .nav__link {
+      font-size: var(--font-size-small);
+      font-weight: 400;
+      color: var(--color-white);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .nav__link::after {
+      content: '';
+      position: absolute;
+      bottom: 0.25rem;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 60%;
+      height: 2px;
+      background: var(--color-white);
+      transition: transform 0.3s ease;
+    }
+    .nav__link:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .nav__link:hover::after,
+    .nav__link.active::after {
+      transform: translateX(-50%) scaleX(1);
+    }
+
+    /* Intro Section */
+    .intro {
+      max-width: 2100px;
+      margin: 0 auto;
+      padding: var(--spacing-70) 0;
+      text-align: center;
+    }
+    .intro__title {
+      font-size: var(--font-size-xlarge);
+      font-weight: 700;
+      letter-spacing: -0.2rem;
+      margin-bottom: var(--spacing-50);
+    }
+    .intro__text {
+      font-size: var(--font-size-medium);
+      line-height: 1.7;
+      color: var(--color-text-muted);
+      margin-bottom: var(--spacing-60);
+    }
+    .intro__text:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Gallery Grid */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+      gap: var(--spacing-60);
+      margin-bottom: var(--spacing-70);
+    }
+
+    /* Journey Card - Minimal Cover Style */
+    .journey-card {
+      position: relative;
+      min-height: 600px;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                  0 2px 8px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .journey-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 64px rgba(0, 0, 0, 0.6),
+                  0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .journey-card__background {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%);
+      z-index: 1;
+      transition: opacity 0.3s ease;
+    }
+    .journey-card:hover .journey-card__background {
+      opacity: 0.9;
+    }
+    .journey-card__image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      z-index: 0;
+      transition: transform 0.6s ease;
+    }
+    .journey-card:hover .journey-card__image {
+      transform: scale(1.05);
+    }
+    .journey-card__content {
+      position: relative;
+      z-index: 2;
+      padding: var(--spacing-50);
+      width: 100%;
+    }
+    .journey-card__meta {
+      font-size: var(--font-size-small);
+      color: var(--color-text-muted);
+      margin-bottom: var(--spacing-20);
+    }
+    .journey-card__title {
+      font-size: var(--font-size-large);
+      font-weight: 700;
+      letter-spacing: -0.01rem;
+      line-height: 1.1;
+      margin: 0;
+    }
+    .journey-card__title a {
+      color: var(--color-white);
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      max-width: 2100px;
+      margin: 0 auto;
+      padding: 0 0 var(--spacing-60);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--spacing-30);
+    }
+    .filter-bar__group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .filter-bar__label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255, 255, 255, 0.35);
+      margin-right: 0.25rem;
+    }
+    .filter-bar__divider {
+      width: 1px;
+      height: 1.5rem;
+      background: rgba(255, 255, 255, 0.12);
+      margin: 0 0.5rem;
+    }
+    .filter-btn {
+      font-family: var(--font-body);
+      font-size: 0.825rem;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+    .filter-btn:hover {
+      color: var(--color-white);
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .filter-btn.active {
+      color: var(--color-primary);
+      background: var(--color-white);
+      border-color: var(--color-white);
+    }
+
+    /* Card filter transitions */
+    .journey-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.4s ease;
+    }
+    .journey-card.hidden {
+      display: none;
+    }
+
+    /* No results message */
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: var(--spacing-70) 0;
+      color: var(--color-text-muted);
+      font-size: var(--font-size-medium);
+      display: none;
+    }
+
+    /* Footer */
+    .footer {
+      padding: var(--spacing-70) 0;
+      margin-top: var(--spacing-70);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .footer__inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--spacing-50);
+    }
+    .footer__brand {
+      font-size: var(--font-size-medium);
+      font-weight: 700;
+    }
+    .footer__nav {
+      display: flex;
+      gap: var(--spacing-40);
+    }
+    .footer__nav a {
+      font-size: var(--font-size-small);
+      color: var(--color-white);
+    }
+    .footer__copyright {
+      font-size: var(--font-size-small);
+      color: var(--color-text-muted);
+      text-align: center;
+      margin-top: var(--spacing-50);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body { padding: 0 var(--spacing-30); }
+      .header {
+        padding-left: var(--spacing-30);
+        padding-right: var(--spacing-30);
+        margin-left: calc(var(--spacing-30) * -1);
+        margin-right: calc(var(--spacing-30) * -1);
+      }
+      .intro {
+        padding: var(--spacing-50) 0;
+      }
+      .intro__title {
+        font-size: clamp(2.5rem, 10vw, 4rem);
+        letter-spacing: -0.1rem;
+      }
+      .nav__list {
+        gap: var(--spacing-30);
+      }
+      .gallery {
+        gap: var(--spacing-50);
+        grid-template-columns: 1fr;
+      }
+      .journey-card {
+        min-height: 500px;
+      }
+      .footer__inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <nav class="nav">
+        <ul class="nav__list">
+          <li><a href="about.html" class="nav__link">About</a></li>
+          <li><a href="journeys.html" class="nav__link active">Journeys</a></li>
+          <li><a href="films.html" class="nav__link">Films</a></li>
+        </ul>
+      </nav>
+      <a href="index.html" class="header__logo">Itsy Bitsy</a>
+    </div>
+  </header>
+
+  <!-- Intro Section -->
+  <section class="intro">
+    <h1 class="intro__title">Journeys</h1>
+    <p class="intro__text">This is a collection of moments gathered along the way—places that slowed me down, light that lingered, and scenes that asked me to pause.</p>
+    <p class="intro__text">These photographs are not records of destinations, but fragments of feeling: awe, quiet joy, stillness, and the subtle magic of being somewhere new.</p>
+    <p class="intro__text">I return to them often, as reminders of how vast and tender the world can be.</p>
+  </section>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar" id="filter-bar">
+    <div class="filter-bar__group">
+      <button class="filter-btn active" data-filter="all">All</button>
+    </div>
+
+    <div class="filter-bar__divider"></div>
+
+    <div class="filter-bar__group">
+      <span class="filter-bar__label">Location</span>
+      <button class="filter-btn" data-filter="location" data-value="hawaii">Hawaii</button>
+      <button class="filter-btn" data-filter="location" data-value="california">California</button>
+      <button class="filter-btn" data-filter="location" data-value="florida">Florida</button>
+      <button class="filter-btn" data-filter="location" data-value="paris">Paris</button>
+      <button class="filter-btn" data-filter="location" data-value="canada">Canada</button>
+    </div>
+
+    <div class="filter-bar__divider"></div>
+
+    <div class="filter-bar__group">
+      <span class="filter-bar__label">Year</span>
+      <button class="filter-btn" data-filter="year" data-value="2018">2018</button>
+      <button class="filter-btn" data-filter="year" data-value="2020">2020</button>
+      <button class="filter-btn" data-filter="year" data-value="2024">2024</button>
+      <button class="filter-btn" data-filter="year" data-value="2026">2026</button>
+    </div>
+
+    <div class="filter-bar__divider"></div>
+
+    <div class="filter-bar__group">
+      <span class="filter-bar__label">Subject</span>
+      <button class="filter-btn" data-filter="subject" data-value="landscapes">Landscapes</button>
+      <button class="filter-btn" data-filter="subject" data-value="sunsets">Sunsets</button>
+      <button class="filter-btn" data-filter="subject" data-value="wildlife">Wildlife</button>
+      <button class="filter-btn" data-filter="subject" data-value="birding">Birding</button>
+      <button class="filter-btn" data-filter="subject" data-value="architecture">Architecture</button>
+      <button class="filter-btn" data-filter="subject" data-value="city">City</button>
+    </div>
+  </div>
+
+  <!-- Journeys Gallery -->
+  <section class="section">
+    <div class="gallery" id="gallery">
+      <!-- Hawaii Journey -->
+      <article class="journey-card" data-location="hawaii" data-year="2018" data-subject="landscapes, sunsets">
+        <div class="journey-card__background"></div>
+        <picture>
+          <source type="image/webp"
+            srcset="images/journeys/_optimized/hawaii/DSC02826-thumb.webp 400w,
+               images/journeys/_optimized/hawaii/DSC02826-medium.webp 800w,
+               images/journeys/_optimized/hawaii/DSC02826-large.webp 1600w"
+            sizes="(max-width: 768px) 100vw, 50vw">
+          <img src="images/journeys/_optimized/hawaii/DSC02826-large.jpg"
+            srcset="images/journeys/_optimized/hawaii/DSC02826-thumb.jpg 400w,
+             images/journeys/_optimized/hawaii/DSC02826-medium.jpg 800w,
+             images/journeys/_optimized/hawaii/DSC02826-large.jpg 1600w"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            alt="Island Light" class="journey-card__image" loading="lazy">
+        </picture>
+        <div class="journey-card__content">
+          <p class="journey-card__meta">Hawaii, 2018</p>
+          <h2 class="journey-card__title">
+            <a href="journeys/hawaii.html">Island<br>Light</a>
+          </h2>
+        </div>
+      </article>
+
+      <!-- California Journey -->
+      <article class="journey-card" data-location="california" data-year="2018" data-subject="landscapes, sunsets, wildlife, birding">
+        <div class="journey-card__background"></div>
+        <picture>
+          <source type="image/webp"
+            srcset="images/journeys/_optimized/california/Borregodesertsunrise1-thumb.webp 400w,
+               images/journeys/_optimized/california/Borregodesertsunrise1-medium.webp 800w,
+               images/journeys/_optimized/california/Borregodesertsunrise1-large.webp 1600w"
+            sizes="(max-width: 768px) 100vw, 50vw">
+          <img src="images/journeys/_optimized/california/Borregodesertsunrise1-large.jpg"
+            srcset="images/journeys/_optimized/california/Borregodesertsunrise1-thumb.jpg 400w,
+             images/journeys/_optimized/california/Borregodesertsunrise1-medium.jpg 800w,
+             images/journeys/_optimized/california/Borregodesertsunrise1-large.jpg 1600w"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            alt="California Dreaming" class="journey-card__image" loading="lazy">
+        </picture>
+        <div class="journey-card__content">
+          <p class="journey-card__meta">California, 2018–2020</p>
+          <h2 class="journey-card__title">
+            <a href="journeys/california.html">California<br>Dreaming</a>
+          </h2>
+        </div>
+      </article>
+
+      <!-- Everglades Journey -->
+      <article class="journey-card" data-location="florida" data-year="2024" data-subject="birding, wildlife, landscapes">
+        <div class="journey-card__background"></div>
+        <picture>
+          <source type="image/webp"
+            srcset="images/journeys/_optimized/everglades/DSC05678-thumb.webp 400w,
+               images/journeys/_optimized/everglades/DSC05678-medium.webp 800w,
+               images/journeys/_optimized/everglades/DSC05678-large.webp 1600w"
+            sizes="(max-width: 768px) 100vw, 50vw">
+          <img src="images/journeys/_optimized/everglades/DSC05678-large.jpg"
+            srcset="images/journeys/_optimized/everglades/DSC05678-thumb.jpg 400w,
+             images/journeys/_optimized/everglades/DSC05678-medium.jpg 800w,
+             images/journeys/_optimized/everglades/DSC05678-large.jpg 1600w"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            alt="Everglades Adventure" class="journey-card__image" loading="lazy">
+        </picture>
+        <div class="journey-card__content">
+          <p class="journey-card__meta">Florida, 2024</p>
+          <h2 class="journey-card__title">
+            <a href="journeys/everglades.html">Everglades<br>Adventure</a>
+          </h2>
+        </div>
+      </article>
+
+      <!-- Paris Journey -->
+      <article class="journey-card" data-location="paris" data-year="2024" data-subject="architecture, city">
+        <div class="journey-card__background"></div>
+        <picture>
+          <source type="image/webp"
+            srcset="images/journeys/_optimized/paris/DSC05397-thumb.webp 400w,
+               images/journeys/_optimized/paris/DSC05397-medium.webp 800w,
+               images/journeys/_optimized/paris/DSC05397-large.webp 1600w"
+            sizes="(max-width: 768px) 100vw, 50vw">
+          <img src="images/journeys/_optimized/paris/DSC05397-large.jpg"
+            srcset="images/journeys/_optimized/paris/DSC05397-thumb.jpg 400w,
+             images/journeys/_optimized/paris/DSC05397-medium.jpg 800w,
+             images/journeys/_optimized/paris/DSC05397-large.jpg 1600w"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            alt="City of Light" class="journey-card__image" loading="lazy">
+        </picture>
+        <div class="journey-card__content">
+          <p class="journey-card__meta">Paris, 2024</p>
+          <h2 class="journey-card__title">
+            <a href="journeys/paris.html">City of<br>Light</a>
+          </h2>
+        </div>
+      </article>
+
+      <!-- Canada Journey -->
+      <article class="journey-card" data-location="canada" data-year="2026" data-subject="architecture, city, landscapes">
+        <div class="journey-card__background"></div>
+        <picture>
+          <source type="image/webp"
+            srcset="images/journeys/_optimized/canada/CathedralduMontreal-thumb.webp 400w,
+               images/journeys/_optimized/canada/CathedralduMontreal-medium.webp 800w,
+               images/journeys/_optimized/canada/CathedralduMontreal-large.webp 1600w"
+            sizes="(max-width: 768px) 100vw, 50vw">
+          <img src="images/journeys/_optimized/canada/CathedralduMontreal-large.jpg"
+            srcset="images/journeys/_optimized/canada/CathedralduMontreal-thumb.jpg 400w,
+             images/journeys/_optimized/canada/CathedralduMontreal-medium.jpg 800w,
+             images/journeys/_optimized/canada/CathedralduMontreal-large.jpg 1600w"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            alt="Northern Crossings" class="journey-card__image" loading="lazy">
+        </picture>
+        <div class="journey-card__content">
+          <p class="journey-card__meta">Canada, 2026</p>
+          <h2 class="journey-card__title">
+            <a href="journeys/canada.html">Northern<br>Crossings</a>
+          </h2>
+        </div>
+      </article>
+
+      <!-- No results message -->
+      <p class="no-results" id="no-results">No journeys match the selected filters.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <a href="index.html">Itsy Bitsy</a>
+      </div>
+      <nav class="footer__nav">
+        <a href="about.html">About</a>
+        <a href="journeys.html">Journeys</a>
+        <a href="films.html">Films</a>
+      </nav>
+    </div>
+    <p class="footer__copyright">© 2024 Itsy Bitsy. All rights reserved.</p>
+  </footer>
+  <script>
+    (() => {
+      const filterBar = document.getElementById('filter-bar');
+
+      // Clicking a tag navigates to the tag album page (tags.html)
+      // Clicking "All" stays on this page showing all journey cards
+      filterBar.addEventListener('click', (e) => {
+        const btn = e.target.closest('.filter-btn');
+        if (!btn) return;
+
+        const filterType = btn.dataset.filter;
+        const value = btn.dataset.value;
+
+        if (filterType !== 'all' && value) {
+          window.location.href = `tags.html?type=${filterType}&tag=${value}`;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

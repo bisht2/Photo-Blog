@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Original full-resolution images (kept locally, not deployed)
+# Only the optimized versions in _optimized/ go to production
+images/journeys/california/*.jpg
+images/journeys/canada/*.jpg
+images/journeys/everglades/*.jpg
+images/journeys/hawaii/*.jpg
+images/journeys/paris/*.jpg
+!images/journeys/_optimized/**
+
+# Video files too large for Cloudflare Pages (25MB limit)
+# Host videos on YouTube/Vimeo/Cloudflare Stream instead
+images/films/*.MP4
+images/films/*.mp4
+
+# Build artifacts
+*.log
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+*.swp
+*.swo
+
+# npm
+package-lock.json
+
+# Stale git directories
+.git-old/
+.git-ready/

@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse by Tag — Itsy Bitsy</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-primary: #111111;
+      --color-black: #000000;
+      --color-white: #ffffff;
+      --color-text-muted: rgba(255, 255, 255, 0.7);
+      --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --spacing-20: 0.5rem;
+      --spacing-30: clamp(0.5rem, 1vw, 1rem);
+      --spacing-40: clamp(0.75rem, 1.5vw, 1.5rem);
+      --spacing-50: clamp(1rem, 2vw, 2rem);
+      --spacing-60: clamp(1.5rem, 3vw, 3rem);
+      --spacing-70: clamp(2rem, 4vw, 4rem);
+      --font-size-small: clamp(0.825rem, 0.825rem + ((1vw - 0.2rem) * 0.433), 1.0625rem);
+      --font-size-medium: clamp(1.25rem, 3vw, 1.5rem);
+      --font-size-large: clamp(2.5rem, 3vw, 3rem);
+      --font-size-xlarge: clamp(3.5rem, 8vw, 8rem);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: var(--font-body);
+      line-height: 1.5;
+      color: var(--color-white);
+      background-color: var(--color-primary);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      padding: 0 var(--spacing-50);
+    }
+
+    a { color: inherit; text-decoration: none; transition: opacity 0.2s ease; }
+    a:hover { opacity: 0.8; }
+    ul { list-style: none; }
+    img, video { max-width: 100%; display: block; height: auto; }
+    ::selection { background: var(--color-white); color: var(--color-black); }
+
+    h1, h2, h3, h4 { font-family: var(--font-body); font-weight: 700; line-height: 1.1; }
+    h1 { font-size: var(--font-size-xlarge); letter-spacing: -0.2rem; margin: 0; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--color-primary);
+      padding: var(--spacing-50) 0;
+      margin: 0 calc(var(--spacing-50) * -1);
+      padding-left: var(--spacing-50);
+      padding-right: var(--spacing-50);
+    }
+    .header__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header__logo {
+      font-size: var(--font-size-large);
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .nav__list {
+      display: flex;
+      gap: var(--spacing-40);
+      align-items: center;
+    }
+    .nav__link {
+      font-size: var(--font-size-small);
+      font-weight: 400;
+      color: var(--color-white);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .nav__link::after {
+      content: '';
+      position: absolute;
+      bottom: 0.25rem;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 60%;
+      height: 2px;
+      background: var(--color-white);
+      transition: transform 0.3s ease;
+    }
+    .nav__link:hover { background: rgba(255, 255, 255, 0.05); }
+    .nav__link:hover::after, .nav__link.active::after { transform: translateX(-50%) scaleX(1); }
+
+    /* Tag Header */
+    .tag-header {
+      padding: var(--spacing-70) 0 var(--spacing-50);
+      max-width: 800px;
+    }
+    .tag-header__back {
+      font-size: var(--font-size-small);
+      color: var(--color-text-muted);
+      margin-bottom: var(--spacing-30);
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    .tag-header__back:hover {
+      color: var(--color-white);
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateX(-4px);
+    }
+    .tag-header__title {
+      font-size: var(--font-size-xlarge);
+      font-weight: 700;
+      letter-spacing: -0.2rem;
+      margin-bottom: var(--spacing-20);
+      text-transform: capitalize;
+    }
+    .tag-header__count {
+      font-size: var(--font-size-medium);
+      color: var(--color-text-muted);
+      font-weight: 400;
+    }
+
+    /* Photo Grid */
+    .tag-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 350px), 1fr));
+      gap: var(--spacing-40);
+      margin-bottom: var(--spacing-70);
+    }
+    .tag-grid__item {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .tag-grid__item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    }
+    .tag-grid__image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .tag-grid__item:hover .tag-grid__image {
+      transform: scale(1.05);
+    }
+    .tag-grid__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 50%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: var(--spacing-40);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .tag-grid__item:hover .tag-grid__overlay {
+      opacity: 1;
+    }
+    .tag-grid__caption {
+      font-size: 0.875rem;
+      color: var(--color-white);
+      font-style: italic;
+      margin-bottom: 0.25rem;
+    }
+    .tag-grid__journey {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Empty State */
+    .tag-empty {
+      text-align: center;
+      padding: var(--spacing-70) 0;
+      color: var(--color-text-muted);
+      font-size: var(--font-size-medium);
+    }
+
+    /* All Tags View */
+    .all-tags {
+      margin-bottom: var(--spacing-70);
+    }
+    .all-tags__group {
+      margin-bottom: var(--spacing-60);
+    }
+    .all-tags__label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255, 255, 255, 0.35);
+      margin-bottom: var(--spacing-30);
+    }
+    .all-tags__list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .all-tags__btn {
+      font-family: var(--font-body);
+      font-size: var(--font-size-small);
+      font-weight: 500;
+      color: var(--color-text-muted);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.6rem 1.5rem;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .all-tags__btn:hover {
+      color: var(--color-white);
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.05);
+      opacity: 1;
+    }
+    .all-tags__btn-count {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 2rem;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      cursor: zoom-out;
+    }
+    .lightbox.active { display: flex; opacity: 1; }
+    .lightbox__image {
+      max-width: 95vw;
+      max-height: 95vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8);
+      animation: lightboxZoom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes lightboxZoom {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .lightbox__close {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--color-white);
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10000;
+    }
+    .lightbox__close:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotate(90deg) scale(1.1);
+    }
+    .lightbox__caption {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--color-white);
+      font-size: var(--font-size-small);
+      text-align: center;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      max-width: 80%;
+    }
+
+    /* Footer */
+    .footer {
+      padding: var(--spacing-70) 0;
+      margin-top: var(--spacing-70);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .footer__inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--spacing-50);
+    }
+    .footer__brand { font-size: var(--font-size-medium); font-weight: 700; }
+    .footer__nav { display: flex; gap: var(--spacing-40); }
+    .footer__nav a { font-size: var(--font-size-small); color: var(--color-white); }
+    .footer__copyright {
+      font-size: var(--font-size-small);
+      color: var(--color-text-muted);
+      text-align: center;
+      margin-top: var(--spacing-50);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body { padding: 0 var(--spacing-30); }
+      .header {
+        padding-left: var(--spacing-30);
+        padding-right: var(--spacing-30);
+        margin-left: calc(var(--spacing-30) * -1);
+        margin-right: calc(var(--spacing-30) * -1);
+      }
+      .tag-header { padding: var(--spacing-50) 0 var(--spacing-30); }
+      .tag-header__title {
+        font-size: clamp(2.5rem, 10vw, 4rem);
+        letter-spacing: -0.1rem;
+      }
+      .tag-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-30);
+      }
+      .tag-grid__overlay { opacity: 1; }
+      .footer__inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <nav class="nav">
+        <ul class="nav__list">
+          <li><a href="about.html" class="nav__link">About</a></li>
+          <li><a href="journeys.html" class="nav__link active">Journeys</a></li>
+          <li><a href="films.html" class="nav__link">Films</a></li>
+        </ul>
+      </nav>
+      <a href="index.html" class="header__logo">Itsy Bitsy</a>
+    </div>
+  </header>
+
+  <!-- Tag Header -->
+  <section class="tag-header">
+    <a href="journeys.html" class="tag-header__back">&larr; Back to Journeys</a>
+    <h1 class="tag-header__title" id="tag-title">Browse by Tag</h1>
+    <p class="tag-header__count" id="tag-count"></p>
+  </section>
+
+  <!-- Content: rendered by JS -->
+  <div id="content"></div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox__close" aria-label="Close lightbox">&times;</button>
+    <img src="" alt="" class="lightbox__image" id="lightbox-image">
+    <div class="lightbox__caption" id="lightbox-caption"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <a href="index.html">Itsy Bitsy</a>
+      </div>
+      <nav class="footer__nav">
+        <a href="about.html">About</a>
+        <a href="journeys.html">Journeys</a>
+        <a href="films.html">Films</a>
+      </nav>
+    </div>
+    <p class="footer__copyright">&copy; 2024 Itsy Bitsy. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // =========================================================
+    //  PHOTO DATABASE
+    //  Each photo has visible tags (subjects, location, year)
+    //  and optional internal notes (not shown to viewers).
+    //
+    //  TO ADD A NEW PHOTO:
+    //  Copy one of the objects below and update the fields.
+    //  "notes" is for your own organization — viewers never see it.
+    // =========================================================
+    const photos = [
+      // --- HAWAII (2018) ---
+      {
+        src: "images/journeys/hawaii/DSC02644.jpg",
+        alt: "Waterfall cascading through lush green foliage",
+        caption: "A hidden waterfall draped in emerald green",
+        journey: "Island Light",
+        journeyUrl: "journeys/hawaii.html",
+        location: "hawaii",
+        year: "2018",
+        subjects: ["landscapes"],
+        notes: ""  // internal only — add your own notes here
+      },
+      {
+        src: "images/journeys/hawaii/DSC02784.jpg",
+        alt: "Hanalei Bay at sunset with palm silhouettes",
+        caption: "Hanalei Bay fading into pink and lavender at dusk",
+        journey: "Island Light",
+        journeyUrl: "journeys/hawaii.html",
+        location: "hawaii",
+        year: "2018",
+        subjects: ["landscapes", "sunsets"],
+        notes: ""
+      },
+      {
+        src: "images/journeys/hawaii/DSC02826.jpg",
+        alt: "Rocky shoreline at sunset with crashing waves",
+        caption: "Waves breaking against volcanic rock as the sun dips below the horizon",
+        journey: "Island Light",
+        journeyUrl: "journeys/hawaii.html",
+        location: "hawaii",
+        year: "2018",
+        subjects: ["landscapes", "sunsets"],
+        notes: ""
+      },
+      {
+        src: "images/journeys/hawaii/DSC02852.jpg",
+        alt: "Palm trees silhouetted against twilight sky",
+        caption: "Palms swaying in the evening breeze, silhouettes against the fading light",
+        journey: "Island Light",
+        journeyUrl: "journeys/hawaii.html",
+        location: "hawaii",
+        year: "2018",
+        subjects: ["landscapes", "sunsets"],
+        notes: ""
+      },
+
+      // --- CALIFORNIA (2018–2020) ---
+      {
+        src: "images/journeys/california/Borregodesertsunrise1.jpg",
+        alt: "Borrego Desert sunrise over mountain ridges",
+        caption: "First light breaking over the desert ridges, wildflowers catching the glow",
+        journey: "California Dreaming",
+        journeyUrl: "journeys/california.html",
+        location: "california",
+        year: "2020",
+        subjects: ["landscapes", "sunsets"],
+        notes: ""
+      },
+      {
+        src: "images/journeys/california/Borregodesertsunrise2.jpg",
+        alt: "Desert brush silhouetted against golden sunrise",
+        caption: "Desert brush aglow as the sun climbs above the haze",
+        journey: "California Dreaming",
+        journeyUrl: "journeys/california.html",
+        location: "california",
+        year: "2020",
+        subjects: ["landscapes", "sunsets"],
+        notes: ""
+      },
+      {
+        src: "images/journeys/california/SanDiego Zoo Aviary.jpg",
+        alt: "Golden-breasted starling perched on a branch among orange flowers",
+        caption: "A golden-breasted starling watching from the aviary, San Diego Zoo",
+        journey: "California Dreaming",
+        journeyUrl: "journeys/california.html",
+        location: "california",
+        year: "2018",
+        subjects: ["birding", "wildlife"],
+        notes: ""
+      },
+      {
+        src: "images/journeys/california/SanDiegoZooLioness.jpg",
+        alt: "Lioness resting with a watchful gaze",
+        caption: "Quiet power — a lioness at rest, San Diego Zoo",
+        journey: "California Dreaming",
+        journeyUrl: "journeys/california.html",
+        location: "california",
+        year: "2018",
+        subjects: ["wildlife"],
+        notes: ""
+      },
+
+      // --- EVERGLADES (2024) ---
+      {
+        src: "images/journeys/everglades/DSC05476.jpg",
+        alt: "Everglades scene",
+        caption: "Morning light through the mangroves",
+        journey: "Everglades Adventure",
+        journeyUrl: "journeys/everglades.html",
+        location: "florida",
+        year: "2024",
+        subjects: ["landscapes"],
+        notes: ""
+      },
+      {
+        src: "images/journeys/everglades/DSC05504.jpg",
+        alt: "Everglades wildlife",
+        caption: "A heron waiting patiently in the wetlands",
+        journey: "Everglades Adventure",
+        journeyUrl: "journeys/everglades.html",
+        location: "florida",
+        year: "2024",
+        subjects: ["birding", "wildlife"],
+        notes: ""
+      },
+      {
+        src: "images/journeys/everglades/DSC05608.jpg",
+        alt: "Everglades bird",
+        caption: "Stillness among the sawgrass",
+        journey: "Everglades Adventure",
+        journeyUrl: "journeys/everglades.html",
+        location: "florida",
+        year: "2024",
+        subjects: ["birding", "wildlife"],
+        notes: ""
+      },
+      {
+        src: "images/journeys/everglades/DSC05678.jpg",
+        alt: "Everglades landscape",
+        caption: "Golden hour in the river of grass",
+        journey: "Everglades Adventure",
+        journeyUrl: "journeys/everglades.html",
+        location: "florida",
+        year: "2024",
+        subjects: ["landscapes", "sunsets"],
+        notes: ""
+      },
+
+      // --- PARIS (2024) ---
+      {
+        src: "images/journeys/paris/DSC05397.jpg",
+        alt: "Paris scene",
+        caption: "Quiet moments in the city",
+        journey: "City of Light",
+        journeyUrl: "journeys/paris.html",
+        location: "paris",
+        year: "2024",
+        subjects: ["architecture", "city"],
+        notes: ""
+      },
+
+      // --- CANADA (2026) ---
+      {
+        src: "images/journeys/canada/CathedralduMontreal.jpg",
+        alt: "Notre-Dame Basilica of Montreal interior",
+        caption: "The breathtaking altar of Notre-Dame Basilica, Montreal",
+        journey: "Northern Crossings",
+        journeyUrl: "journeys/canada.html",
+        location: "canada",
+        year: "2026",
+        subjects: ["architecture"],
+        notes: ""
+      },
+      {
+        src: "images/journeys/canada/Cathedralstatue.jpg",
+        alt: "Ornate statue inside Notre-Dame Basilica",
+        caption: "A silent figure gazing over the gilded nave",
+        journey: "Northern Crossings",
+        journeyUrl: "journeys/canada.html",
+        location: "canada",
+        year: "2026",
+        subjects: ["architecture"],
+        notes: ""
+      },
+      {
+        src: "images/journeys/canada/Ottawa.jpg",
+        alt: "Ottawa riverfront at sunset with ferry",
+        caption: "Golden hour on the Ottawa River, a ferry gliding home",
+        journey: "Northern Crossings",
+        journeyUrl: "journeys/canada.html",
+        location: "canada",
+        year: "2026",
+        subjects: ["landscapes", "sunsets", "city"],
+        notes: ""
+      },
+      {
+        src: "images/journeys/canada/Victoria (1).jpg",
+        alt: "British Columbia Parliament Buildings with snow-capped mountains behind",
+        caption: "Victoria's Parliament Buildings against the Olympic Mountains",
+        journey: "Northern Crossings",
+        journeyUrl: "journeys/canada.html",
+        location: "canada",
+        year: "2026",
+        subjects: ["architecture", "city", "landscapes"],
+        notes: ""
+      },
+      {
+        src: "images/journeys/canada/Victoria (2).jpg",
+        alt: "Race Rocks Lighthouse on a rocky island with misty mountains",
+        caption: "Race Rocks Lighthouse standing watch over the Strait of Juan de Fuca",
+        journey: "Northern Crossings",
+        journeyUrl: "journeys/canada.html",
+        location: "canada",
+        year: "2026",
+        subjects: ["landscapes"],
+        notes: ""
+      },
+      {
+        src: "images/journeys/canada/Ucluelet.jpg",
+        alt: "Rocky coastline with forested islands at golden hour",
+        caption: "Scattered islands off the coast of Ucluelet, bathed in evening light",
+        journey: "Northern Crossings",
+        journeyUrl: "journeys/canada.html",
+        location: "canada",
+        year: "2026",
+        subjects: ["landscapes", "sunsets"],
+        notes: ""
+      }
+    ];
+
+    // =========================================================
+    //  PAGE LOGIC
+    // =========================================================
+    const params = new URLSearchParams(window.location.search);
+    const tagType = params.get('type');   // "subject", "location", or "year"
+    const tagValue = params.get('tag');   // e.g. "sunsets", "hawaii", "2024"
+    const content = document.getElementById('content');
+    const titleEl = document.getElementById('tag-title');
+    const countEl = document.getElementById('tag-count');
+
+    // Display names for locations
+    const locationNames = {
+      hawaii: 'Hawaii',
+      california: 'California',
+      florida: 'Florida',
+      paris: 'Paris',
+      canada: 'Canada'
+    };
+
+    function filterPhotos(type, value) {
+      return photos.filter(p => {
+        if (type === 'subject') return p.subjects.includes(value);
+        if (type === 'location') return p.location === value;
+        if (type === 'year') return p.year === value;
+        return false;
+      });
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // Helper: convert original path to optimized path
+    // e.g. "images/journeys/hawaii/DSC02644.jpg" -> "images/journeys/_optimized/hawaii/DSC02644-large.webp"
+    function optPath(src, suffix, ext) {
+      const parts = src.split('/');
+      // parts = ["images", "journeys", "hawaii", "DSC02644.jpg"]
+      const filename = parts.pop();
+      const base = filename.replace(/\.[^.]+$/, '').replace(/\s+/g, '-').replace(/[()]/g, '');
+      parts.splice(2, 0, '_optimized');
+      return parts.join('/') + '/' + base + '-' + suffix + ext;
+    }
+
+    function renderGrid(filteredPhotos) {
+      const grid = document.createElement('div');
+      grid.className = 'tag-grid';
+
+      filteredPhotos.forEach((photo, i) => {
+        const item = document.createElement('div');
+        item.className = 'tag-grid__item';
+        item.dataset.index = i;
+        item.innerHTML = `
+          <picture>
+            <source type="image/webp"
+              srcset="${optPath(photo.src, 'thumb', '.webp')} 400w,
+                     ${optPath(photo.src, 'medium', '.webp')} 800w,
+                     ${optPath(photo.src, 'large', '.webp')} 1600w"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw">
+            <img src="${optPath(photo.src, 'medium', '.jpg')}"
+              srcset="${optPath(photo.src, 'thumb', '.jpg')} 400w,
+                     ${optPath(photo.src, 'medium', '.jpg')} 800w,
+                     ${optPath(photo.src, 'large', '.jpg')} 1600w"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              alt="${photo.alt}" class="tag-grid__image" loading="lazy">
+          </picture>
+          <div class="tag-grid__overlay">
+            <span class="tag-grid__caption">${photo.caption}</span>
+            <span class="tag-grid__journey">${photo.journey} · ${locationNames[photo.location] || photo.location}, ${photo.year}</span>
+          </div>
+        `;
+        grid.appendChild(item);
+      });
+
+      content.innerHTML = '';
+      content.appendChild(grid);
+
+      // Attach lightbox
+      grid.querySelectorAll('.tag-grid__item').forEach((item, i) => {
+        item.addEventListener('click', () => openLightbox(filteredPhotos[i]));
+      });
+    }
+
+    function renderAllTags() {
+      // Count photos per tag
+      const subjectCounts = {};
+      const locationCounts = {};
+      const yearCounts = {};
+
+      photos.forEach(p => {
+        p.subjects.forEach(s => { subjectCounts[s] = (subjectCounts[s] || 0) + 1; });
+        locationCounts[p.location] = (locationCounts[p.location] || 0) + 1;
+        yearCounts[p.year] = (yearCounts[p.year] || 0) + 1;
+      });
+
+      function makeButtons(counts, type, nameMap) {
+        return Object.entries(counts)
+          .sort((a, b) => b[1] - a[1])
+          .map(([val, count]) => {
+            const label = nameMap ? (nameMap[val] || capitalize(val)) : capitalize(val);
+            return `<a href="tags.html?type=${type}&tag=${val}" class="all-tags__btn">${label} <span class="all-tags__btn-count">${count}</span></a>`;
+          })
+          .join('');
+      }
+
+      content.innerHTML = `
+        <div class="all-tags">
+          <div class="all-tags__group">
+            <p class="all-tags__label">Subject</p>
+            <div class="all-tags__list">${makeButtons(subjectCounts, 'subject')}</div>
+          </div>
+          <div class="all-tags__group">
+            <p class="all-tags__label">Location</p>
+            <div class="all-tags__list">${makeButtons(locationCounts, 'location', locationNames)}</div>
+          </div>
+          <div class="all-tags__group">
+            <p class="all-tags__label">Year</p>
+            <div class="all-tags__list">${makeButtons(yearCounts, 'year')}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Route: specific tag or browse all
+    if (tagType && tagValue) {
+      const filtered = filterPhotos(tagType, tagValue);
+      const displayName = tagType === 'location'
+        ? (locationNames[tagValue] || capitalize(tagValue))
+        : capitalize(tagValue);
+
+      titleEl.textContent = displayName;
+      countEl.textContent = `${filtered.length} photo${filtered.length !== 1 ? 's' : ''}`;
+      document.title = `${displayName} — Itsy Bitsy`;
+
+      if (filtered.length > 0) {
+        renderGrid(filtered);
+      } else {
+        content.innerHTML = '<p class="tag-empty">No photos found with this tag.</p>';
+      }
+    } else {
+      // No tag specified — show all available tags
+      titleEl.textContent = 'Browse by Tag';
+      countEl.textContent = `${photos.length} photos across all journeys`;
+      renderAllTags();
+    }
+
+    // =========================================================
+    //  LIGHTBOX
+    // =========================================================
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-image');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    const closeBtn = document.querySelector('.lightbox__close');
+
+    function openLightbox(photo) {
+      lightboxImg.src = optPath(photo.src, 'large', '.jpg');
+      lightboxImg.alt = photo.alt;
+      lightboxCaption.textContent = photo.caption;
+      lightboxCaption.style.display = 'block';
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    const closeLightbox = () => {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
+    closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('active')) closeLightbox();
+    });
+  </script>
+</body>
+</html>

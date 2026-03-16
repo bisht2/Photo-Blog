@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Itsy Bitsy</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-primary: #111111;
+      --color-black: #000000;
+      --color-white: #ffffff;
+      --color-text-muted: rgba(255, 255, 255, 0.7);
+      --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --spacing-20: 0.5rem;
+      --spacing-30: clamp(0.5rem, 1vw, 1rem);
+      --spacing-40: clamp(0.75rem, 1.5vw, 1.5rem);
+      --spacing-50: clamp(1rem, 2vw, 2rem);
+      --spacing-60: clamp(1.5rem, 3vw, 3rem);
+      --spacing-70: clamp(2rem, 4vw, 4rem);
+      --font-size-small: clamp(0.825rem, 0.825rem + ((1vw - 0.2rem) * 0.433), 1.0625rem);
+      --font-size-medium: clamp(1.25rem, 3vw, 1.5rem);
+      --font-size-large: clamp(2.5rem, 3vw, 3rem);
+      --font-size-xlarge: clamp(3.5rem, 8vw, 8rem);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: var(--font-body);
+      line-height: 1.5;
+      color: var(--color-white);
+      background-color: var(--color-primary);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      padding: 0 var(--spacing-50);
+    }
+
+    a { color: inherit; text-decoration: none; transition: opacity 0.2s ease; }
+    a:hover { opacity: 0.8; }
+    ul { list-style: none; }
+    img, video { max-width: 100%; display: block; height: auto; }
+    ::selection { background: var(--color-white); color: var(--color-black); }
+
+    h1, h2, h3, h4 { font-family: var(--font-body); font-weight: 700; line-height: 1.1; }
+    h1 { font-size: var(--font-size-xlarge); letter-spacing: -0.2rem; margin: 0; }
+    h2 { font-size: var(--font-size-large); letter-spacing: -0.01rem; margin: 0; }
+    h3 { font-size: var(--font-size-medium); font-weight: 500; margin: 0; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--color-primary);
+      padding: var(--spacing-50) 0;
+      margin: 0 calc(var(--spacing-50) * -1);
+      padding-left: var(--spacing-50);
+      padding-right: var(--spacing-50);
+    }
+    .header__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header__logo {
+      font-size: var(--font-size-large);
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .nav__list {
+      display: flex;
+      gap: var(--spacing-40);
+      align-items: center;
+    }
+    .nav__link {
+      font-size: var(--font-size-small);
+      font-weight: 400;
+      color: var(--color-white);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .nav__link::after {
+      content: '';
+      position: absolute;
+      bottom: 0.25rem;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 60%;
+      height: 2px;
+      background: var(--color-white);
+      transition: transform 0.3s ease;
+    }
+    .nav__link:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .nav__link:hover::after,
+    .nav__link.active::after {
+      transform: translateX(-50%) scaleX(1);
+    }
+
+    /* About Section with Background */
+    .about-hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 calc(var(--spacing-50) * -1);
+      padding: var(--spacing-70) var(--spacing-50);
+      overflow: hidden;
+      cursor: zoom-in;
+      transition: transform 0.3s ease;
+    }
+    .about-hero:hover {
+      transform: scale(1.01);
+    }
+    .about-hero__background {
+      position: absolute;
+      inset: 0;
+      background-image: url('images/about/ghibli-travel.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 0;
+      transition: transform 0.6s ease;
+    }
+    .about-hero:hover .about-hero__background {
+      transform: scale(1.05);
+    }
+    .about-hero__overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        ellipse 120% 100% at center,
+        rgba(0, 0, 0, 0.88) 0%,
+        rgba(0, 0, 0, 0.75) 25%,
+        rgba(0, 0, 0, 0.5) 50%,
+        rgba(0, 0, 0, 0.3) 75%,
+        rgba(0, 0, 0, 0.15) 100%
+      );
+      z-index: 1;
+    }
+    .about {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: var(--spacing-70) var(--spacing-50);
+      text-align: center;
+      z-index: 2;
+    }
+    .about__title {
+      font-size: var(--font-size-xlarge);
+      font-weight: 700;
+      letter-spacing: -0.2rem;
+      margin-bottom: var(--spacing-60);
+      color: var(--color-white);
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.9),
+                   0 2px 8px rgba(0, 0, 0, 0.8),
+                   0 1px 4px rgba(0, 0, 0, 0.6);
+    }
+    .about__text {
+      font-size: var(--font-size-medium);
+      line-height: 2;
+      color: rgba(255, 255, 255, 0.95);
+      margin-bottom: var(--spacing-50);
+      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.9),
+                   0 2px 8px rgba(0, 0, 0, 0.8),
+                   0 1px 4px rgba(0, 0, 0, 0.6);
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .about__text:last-of-type {
+      margin-bottom: 0;
+    }
+
+    /* Hidden image for lightbox */
+    .ghibli-image-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 2rem;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      cursor: zoom-out;
+    }
+    .lightbox.active {
+      display: flex;
+      opacity: 1;
+    }
+    .lightbox__image {
+      max-width: 95vw;
+      max-height: 95vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8);
+      transform: scale(0.9);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: lightboxZoom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes lightboxZoom {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .lightbox__close {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--color-white);
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10000;
+    }
+    .lightbox__close:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotate(90deg) scale(1.1);
+    }
+    .ghibli-placeholder {
+      width: 75%;
+      height: 400px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+      border: 2px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: var(--spacing-30);
+      color: var(--color-text-muted);
+    }
+    .ghibli-placeholder__text {
+      font-size: var(--font-size-small);
+      text-align: center;
+      max-width: 400px;
+      line-height: 1.6;
+    }
+
+    /* Alternative: Background Image Style */
+    .about--with-bg {
+      position: relative;
+      padding: var(--spacing-70) 0;
+    }
+    .about--with-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('images/about/ghibli-travel.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.15;
+      z-index: 0;
+      border-radius: 12px;
+    }
+    .about--with-bg .about {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Footer */
+    .footer {
+      padding: var(--spacing-70) 0;
+      margin-top: var(--spacing-70);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .footer__inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--spacing-50);
+    }
+    .footer__brand {
+      font-size: var(--font-size-medium);
+      font-weight: 700;
+    }
+    .footer__nav {
+      display: flex;
+      gap: var(--spacing-40);
+    }
+    .footer__nav a {
+      font-size: var(--font-size-small);
+      color: var(--color-white);
+    }
+    .footer__copyright {
+      font-size: var(--font-size-small);
+      color: var(--color-text-muted);
+      text-align: center;
+      margin-top: var(--spacing-50);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body { padding: 0 var(--spacing-30); }
+      .header {
+        padding-left: var(--spacing-30);
+        padding-right: var(--spacing-30);
+        margin-left: calc(var(--spacing-30) * -1);
+        margin-right: calc(var(--spacing-30) * -1);
+      }
+      .about-hero {
+        margin-left: calc(var(--spacing-30) * -1);
+        margin-right: calc(var(--spacing-30) * -1);
+        padding: var(--spacing-60) var(--spacing-30);
+        min-height: 100svh;
+      }
+      .about {
+        padding: var(--spacing-60) var(--spacing-30);
+      }
+      .about__text {
+        line-height: 1.9;
+        margin-bottom: var(--spacing-40);
+      }
+      .about__title {
+        font-size: clamp(2.5rem, 10vw, 4rem);
+        letter-spacing: -0.1rem;
+      }
+      .nav__list {
+        gap: var(--spacing-30);
+      }
+      .footer__inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <nav class="nav">
+        <ul class="nav__list">
+          <li><a href="about.html" class="nav__link active">About</a></li>
+          <li><a href="journeys.html" class="nav__link">Journeys</a></li>
+          <li><a href="films.html" class="nav__link">Films</a></li>
+        </ul>
+      </nav>
+      <a href="index.html" class="header__logo">Itsy Bitsy</a>
+    </div>
+  </header>
+
+  <!-- About Section with Background -->
+  <section class="about-hero" id="about-hero">
+    <div class="about-hero__background"></div>
+    <div class="about-hero__overlay"></div>
+    <div class="about">
+      <h1 class="about__title">About</h1>
+      <p class="about__text">This is a space for stillness, reflection, and the small wonders that often go unnoticed.</p>
+      <p class="about__text">Through photography and film, I try to capture the feeling of a place, the quality of light, the way time seems to slow when you're truly present.</p>
+      <p class="about__text">Each image here holds a memory—not just of where I was, but of how it felt to be there.</p>
+      <p class="about__text">Thank you for pausing here with me.</p>
+    </div>
+  </section>
+
+  <!-- Hidden image for lightbox -->
+  <img src="images/about/ghibli-travel.jpg" alt="Ghibli style travel illustration" class="ghibli-image-hidden" id="ghibli-image">
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <a href="index.html">Itsy Bitsy</a>
+      </div>
+      <nav class="footer__nav">
+        <a href="about.html">About</a>
+        <a href="journeys.html">Journeys</a>
+        <a href="films.html">Films</a>
+      </nav>
+    </div>
+    <p class="footer__copyright">© 2024 Itsy Bitsy. All rights reserved.</p>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox__close" aria-label="Close lightbox">&times;</button>
+    <img src="" alt="" class="lightbox__image" id="lightbox-image">
+  </div>
+
+  <script>
+    // Lightbox functionality
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-image');
+    const closeBtn = document.querySelector('.lightbox__close');
+    const aboutHero = document.getElementById('about-hero');
+    const ghibliImage = document.getElementById('ghibli-image');
+
+    // Open lightbox when clicking on the hero section
+    if (aboutHero && ghibliImage) {
+      aboutHero.addEventListener('click', (e) => {
+        // Don't open if clicking on links or interactive elements
+        if (e.target.tagName === 'A' || e.target.closest('a')) {
+          return;
+        }
+        lightboxImg.src = ghibliImage.src;
+        lightboxImg.alt = ghibliImage.alt;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    }
+
+    // Close lightbox
+    const closeLightbox = () => {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeLightbox();
+    });
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+        closeLightbox();
+      }
+    });
+  </script>
+</body>
+</html>

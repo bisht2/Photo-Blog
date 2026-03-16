@@ -1,0 +1,15 @@
+{
+  "name": "itsy-bitsy",
+  "version": "1.0.0",
+  "description": "A minimalist photo blog with Material Design aesthetics, featuring a dark editorial theme inspired by WordPress Feature.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "sharp": "^0.34.5"
+  }
+}

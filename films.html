@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Films — Itsy Bitsy</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-primary: #111111;
+      --color-black: #000000;
+      --color-white: #ffffff;
+      --color-text-muted: rgba(255, 255, 255, 0.7);
+      --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --spacing-20: 0.5rem;
+      --spacing-30: clamp(0.5rem, 1vw, 1rem);
+      --spacing-40: clamp(0.75rem, 1.5vw, 1.5rem);
+      --spacing-50: clamp(1rem, 2vw, 2rem);
+      --spacing-60: clamp(1.5rem, 3vw, 3rem);
+      --spacing-70: clamp(2rem, 4vw, 4rem);
+      --font-size-small: clamp(0.825rem, 0.825rem + ((1vw - 0.2rem) * 0.433), 1.0625rem);
+      --font-size-medium: clamp(1.25rem, 3vw, 1.5rem);
+      --font-size-large: clamp(2.5rem, 3vw, 3rem);
+      --font-size-xlarge: clamp(3.5rem, 8vw, 8rem);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: var(--font-body);
+      line-height: 1.5;
+      color: var(--color-white);
+      background-color: var(--color-primary);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      padding: 0 var(--spacing-50);
+    }
+
+    a { color: inherit; text-decoration: none; transition: opacity 0.2s ease; }
+    a:hover { opacity: 0.8; }
+    ul { list-style: none; }
+    img, video { max-width: 100%; display: block; height: auto; }
+    ::selection { background: var(--color-white); color: var(--color-black); }
+
+    h1, h2, h3, h4 { font-family: var(--font-body); font-weight: 700; line-height: 1.1; }
+    h1 { font-size: var(--font-size-xlarge); letter-spacing: -0.2rem; margin: 0; }
+    h2 { font-size: var(--font-size-large); letter-spacing: -0.01rem; margin: 0; }
+    h3 { font-size: var(--font-size-medium); font-weight: 500; margin: 0; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--color-primary);
+      padding: var(--spacing-50) 0;
+      margin: 0 calc(var(--spacing-50) * -1);
+      padding-left: var(--spacing-50);
+      padding-right: var(--spacing-50);
+    }
+    .header__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header__logo {
+      font-size: var(--font-size-large);
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .nav__list {
+      display: flex;
+      gap: var(--spacing-40);
+      align-items: center;
+    }
+    .nav__link {
+      font-size: var(--font-size-small);
+      font-weight: 400;
+      color: var(--color-white);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .nav__link::after {
+      content: '';
+      position: absolute;
+      bottom: 0.25rem;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 60%;
+      height: 2px;
+      background: var(--color-white);
+      transition: transform 0.3s ease;
+    }
+    .nav__link:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .nav__link:hover::after,
+    .nav__link.active::after {
+      transform: translateX(-50%) scaleX(1);
+    }
+
+    /* Intro Section */
+    .intro {
+      max-width: 2100px;
+      margin: 0 auto;
+      padding: var(--spacing-70) 0;
+      text-align: center;
+    }
+    .intro__title {
+      font-size: var(--font-size-xlarge);
+      font-weight: 700;
+      letter-spacing: -0.2rem;
+      margin-bottom: var(--spacing-50);
+    }
+    .intro__text {
+      font-size: var(--font-size-medium);
+      line-height: 1.7;
+      color: var(--color-text-muted);
+      margin-bottom: var(--spacing-60);
+    }
+    .intro__text:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Gallery Grid */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+      gap: var(--spacing-60);
+      margin-bottom: var(--spacing-70);
+    }
+
+    /* Film Card */
+    .film-card {
+      position: relative;
+      min-height: 600px;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                  0 2px 8px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .film-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 64px rgba(0, 0, 0, 0.6),
+                  0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .film-card__background {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%);
+      z-index: 1;
+      transition: opacity 0.3s ease;
+    }
+    .film-card:hover .film-card__background {
+      opacity: 0.9;
+    }
+    .film-card__image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      z-index: 0;
+      transition: transform 0.6s ease;
+    }
+    .film-card:hover .film-card__image {
+      transform: scale(1.05);
+    }
+    .film-card__content {
+      position: relative;
+      z-index: 2;
+      padding: var(--spacing-50);
+      width: 100%;
+    }
+    .film-card__meta {
+      font-size: var(--font-size-small);
+      color: var(--color-text-muted);
+      margin-bottom: var(--spacing-20);
+    }
+    .film-card__title {
+      font-size: var(--font-size-large);
+      font-weight: 700;
+      letter-spacing: -0.01rem;
+      line-height: 1.1;
+      margin: 0;
+    }
+    .film-card__title a {
+      color: var(--color-white);
+    }
+
+    /* Footer */
+    .footer {
+      padding: var(--spacing-70) 0;
+      margin-top: var(--spacing-70);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .footer__inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--spacing-50);
+    }
+    .footer__brand {
+      font-size: var(--font-size-medium);
+      font-weight: 700;
+    }
+    .footer__nav {
+      display: flex;
+      gap: var(--spacing-40);
+    }
+    .footer__nav a {
+      font-size: var(--font-size-small);
+      color: var(--color-white);
+    }
+    .footer__copyright {
+      font-size: var(--font-size-small);
+      color: var(--color-text-muted);
+      text-align: center;
+      margin-top: var(--spacing-50);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body { padding: 0 var(--spacing-30); }
+      .header {
+        padding-left: var(--spacing-30);
+        padding-right: var(--spacing-30);
+        margin-left: calc(var(--spacing-30) * -1);
+        margin-right: calc(var(--spacing-30) * -1);
+      }
+      .intro {
+        padding: var(--spacing-50) 0;
+      }
+      .intro__title {
+        font-size: clamp(2.5rem, 10vw, 4rem);
+        letter-spacing: -0.1rem;
+      }
+      .nav__list {
+        gap: var(--spacing-30);
+      }
+      .gallery {
+        gap: var(--spacing-50);
+        grid-template-columns: 1fr;
+      }
+      .film-card {
+        min-height: 500px;
+      }
+      .footer__inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <nav class="nav">
+        <ul class="nav__list">
+          <li><a href="about.html" class="nav__link">About</a></li>
+          <li><a href="journeys.html" class="nav__link">Journeys</a></li>
+          <li><a href="films.html" class="nav__link active">Films</a></li>
+        </ul>
+      </nav>
+      <a href="index.html" class="header__logo">Itsy Bitsy</a>
+    </div>
+  </header>
+
+  <!-- Intro Section -->
+  <section class="intro">
+    <h1 class="intro__title">Films</h1>
+    <p class="intro__text">Film holds movement, breath, and time.</p>
+    <p class="intro__text">These videos are small visual poems—moments where light shifts, water moves, wind passes through a place.</p>
+    <p class="intro__text">Some are brief, some unfold slowly, but all are meant to be felt rather than watched.</p>
+    <p class="intro__text">I return to them when I need to remember how the world sounds and moves.</p>
+  </section>
+
+  <!-- Films Gallery -->
+  <section class="section">
+    <div class="gallery">
+      <!-- Film 1 -->
+      <article class="film-card">
+        <div class="film-card__background"></div>
+        <img src="images/journeys/everglades/DSC05504.jpg" alt="Moments in Motion" class="film-card__image" style="object-position: 50% 40%;">
+        <div class="film-card__content">
+          <p class="film-card__meta">Film · 3:45</p>
+          <h2 class="film-card__title">
+            <a href="films/moments-in-motion.html">Moments in<br>Motion</a>
+          </h2>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <a href="index.html">Itsy Bitsy</a>
+      </div>
+      <nav class="footer__nav">
+        <a href="about.html">About</a>
+        <a href="journeys.html">Journeys</a>
+        <a href="films.html">Films</a>
+      </nav>
+    </div>
+    <p class="footer__copyright">© 2024 Itsy Bitsy. All rights reserved.</p>
+  </footer>
+</body>
+</html>

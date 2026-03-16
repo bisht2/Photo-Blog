@@ -1,0 +1,29 @@
+# Cloudflare Pages custom headers
+
+# Optimized images — cache aggressively (1 year, immutable)
+/images/journeys/_optimized/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# About images — cache for 1 month
+/images/about/*
+  Cache-Control: public, max-age=2592000
+
+# HTML pages — short cache so updates propagate quickly
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+# JS/CSS assets — cache for 1 week
+/js/*
+  Cache-Control: public, max-age=604800
+
+/css/*
+  Cache-Control: public, max-age=604800
+
+# Security headers for all pages
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
