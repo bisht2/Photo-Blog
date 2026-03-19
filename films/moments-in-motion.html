@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moments in Motion — Itsy Bitsy</title>
+  <title>Moments in Motion — Everglades — Itsy Bitsy</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -148,7 +148,6 @@
     }
     .video-container__player {
       max-width: 90%;
-      max-height: 80vh;
       margin: 0 auto;
       background: var(--color-black);
       border-radius: 16px;
@@ -156,17 +155,22 @@
       box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6),
                   0 4px 16px rgba(0, 0, 0, 0.4);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      padding-bottom: 50.625%; /* 16:9 aspect ratio (90% of 56.25%) */
+      height: 0;
     }
     .video-container__player:hover {
       transform: translateY(-4px);
       box-shadow: 0 20px 64px rgba(0, 0, 0, 0.7),
                   0 8px 24px rgba(0, 0, 0, 0.5);
     }
-    .video-container__player video {
+    .video-container__player iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      max-height: 80vh;
-      height: auto;
-      display: block;
+      height: 100%;
+      border: 0;
     }
     .video-container__caption {
       font-size: 0.875rem;
@@ -223,7 +227,8 @@
         letter-spacing: -0.1rem;
       }
       .video-container__player {
-        width: 100%;
+        max-width: 100%;
+        padding-bottom: 56.25%;
       }
       .footer__inner {
         flex-direction: column;
@@ -251,18 +256,19 @@
   <section class="film-header">
     <a href="../films.html" class="film-header__back">← Back to Films</a>
     <h1 class="film-header__title">Moments in Motion</h1>
-    <p class="film-header__meta">Film · 3:45</p>
+    <p class="film-header__meta">Everglades National Park · Florida, 2024</p>
   </section>
 
   <!-- Video Container -->
   <section class="video-container">
     <div class="video-container__player">
-      <video controls poster="../images/journeys/_optimized/everglades/DSC05504-large.jpg">
-        <!-- TODO: Replace with YouTube/Vimeo/Cloudflare Stream embed URL for better streaming -->
-        <!-- The original MP4 (32MB) exceeds Cloudflare Pages' 25MB file limit -->
-        <source src="../images/films/C0071.MP4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
+      <iframe
+        src="https://www.youtube.com/embed/iqZ5bdFqJSw"
+        title="Moments in Motion — Everglades"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        loading="lazy">
+      </iframe>
     </div>
     <p class="video-container__caption">A visual meditation on movement and stillness</p>
   </section>
