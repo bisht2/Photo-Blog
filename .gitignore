@@ -15,6 +15,10 @@ images/journeys/paris/*.jpg
 images/films/*.MP4
 images/films/*.mp4
 
+# Build scripts (local-only tools, not needed on server)
+build-images.mjs
+update-html-images.mjs
+
 # Build artifacts
 *.log
 .DS_Store
