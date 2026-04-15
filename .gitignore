@@ -3,11 +3,18 @@ node_modules/
 
 # Original full-resolution images (kept locally, not deployed)
 # Only the optimized versions in _optimized/ go to production
-images/journeys/california/*.jpg
-images/journeys/canada/*.jpg
-images/journeys/everglades/*.jpg
-images/journeys/hawaii/*.jpg
-images/journeys/paris/*.jpg
+# Excludes all common source formats — Cloudflare Pages has a 25MB per-file limit
+images/journeys/*/*.jpg
+images/journeys/*/*.jpeg
+images/journeys/*/*.JPG
+images/journeys/*/*.JPEG
+images/journeys/*/*.png
+images/journeys/*/*.PNG
+images/journeys/*/*.webp
+images/journeys/*/*.tiff
+images/journeys/*/*.tif
+images/journeys/*/*.heic
+images/journeys/*/*.HEIC
 !images/journeys/_optimized/**
 
 # Video files too large for Cloudflare Pages (25MB limit)

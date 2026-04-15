@@ -50,9 +50,14 @@ Show the user the proposed captions in a numbered list before writing files; let
 ## 5. Commit + push
 
 1. `git add -A` and show `git status --short`
-2. Suggest a commit message summarizing the change (e.g. "Add 3 Hawaii photos")
-3. Wait for user confirmation
-4. Commit with Claude co-author line, then `git push origin main`
+2. **Before committing, verify no source image >25MB is staged** — Cloudflare Pages rejects deployments containing any file over that limit. Run:
+   ```bash
+   git diff --cached --diff-filter=AM --name-only | xargs -I {} du -b "{}" 2>/dev/null | awk '$1>25000000'
+   ```
+   If anything shows, it means a source image slipped past `.gitignore`. Check `.gitignore` covers that file's extension (jpg, jpeg, png, webp, tiff, heic — and uppercase variants) and add it if missing. Then `git rm --cached <file>` to untrack while keeping it locally.
+3. Suggest a commit message summarizing the change (e.g. "Add 3 Hawaii photos")
+4. Wait for user confirmation
+5. Commit with Claude co-author line, then `git push origin main`
 
 ## Rules
 
