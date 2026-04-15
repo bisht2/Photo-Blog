@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmd //c \"node --version\")",
+      "Bash(where node:*)",
+      "Read(//c/Program Files/nodejs/**)",
+      "Read(//c/Program Files \\(x86\\)/nodejs/**)",
+      "Read(//c/Users/Ishita/Documents/ClaudeC/PhotoBlog/itsy-bitsy/Local/Programs/node/**)",
+      "Read(//c/Users/Ishita/Documents/ClaudeC/PhotoBlog/itsy-bitsy/$HOME/AppData/Local/Programs/nodejs/**)",
+      "Read(//c/Users/Ishita/Documents/ClaudeC/PhotoBlog/itsy-bitsy/$NVM_HOME/nodejs/**)",
+      "Bash(reg query *)"
+    ]
+  }
+}
