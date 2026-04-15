@@ -10,7 +10,9 @@
       "Read(//c/Users/Ishita/Documents/ClaudeC/PhotoBlog/itsy-bitsy/$NVM_HOME/nodejs/**)",
       "Bash(reg query *)",
       "Bash(find images/journeys/_optimized -name \"*-2-*\" -type f -delete)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
